@@ -1,75 +1,73 @@
 import { nanoid } from "nanoid";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { shuffle } from "../utils/shuffle";
+import axios from "axios";
 
 export const GameContext = createContext(null);
 
 const GameContextProvider = ({ children }) => {
-    const data = [
-        {
-            image:
-                "https://i.pinimg.com/1200x/dc/eb/93/dceb939dec86bc011a1159bace7d2b99.jpg",
-            flipped: false,
-            pairId: 1,
-        },
-        {
-            image:
-                "https://i.pinimg.com/736x/35/92/4e/35924e354e53647dedbf34cd36911794.jpg",
-            flipped: false,
-            pairId: 2,
-        },
-        {
-            image:
-                "https://i.pinimg.com/1200x/ed/fb/9f/edfb9f53f30a80514651c4310255b7b7.jpg",
-            flipped: false,
-            pairId: 3,
-        },
-        {
-            image:
-                "https://i.pinimg.com/736x/11/a6/41/11a641d72620007e9efd9881d0fc7167.jpg",
-            flipped: false,
-            pairId: 4,
-        },
-        {
-            image:
-                "https://i.pinimg.com/1200x/6b/4b/b8/6b4bb8b404735f5caafb59e9a388369d.jpg",
-            flipped: false,
-            pairId: 5,
-        },
-        {
-            image:
-                "https://i.pinimg.com/736x/f4/fa/a7/f4faa7feb550320250fa33d91bf646f4.jpg",
-            flipped: false,
-            pairId: 6,
-        },
-    ];
-
-    const [cards, setCards] = useState(() => {
-        return shuffle(
-            [...data, ...data].map((card) => ({
-                ...card,
-                id: nanoid(),
-            }))
-        );
-    });
-
     const [score, setScore] = useState(0);
+    const [cards, setCards] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    async function createCards() {
+        setLoading(true);
+
+        const uniqueCards = [];
+        const urls = [];
+        let i = 0;
+
+        async function getImage() {
+            const params = new URLSearchParams();
+            params.append("included_tags", "oppai");
+            params.append("included_tags", "waifu");
+            params.append("height", ">720");
+
+            const { data } = await axios.get("https://api.waifu.im/search?" + params);
+            return data.images[0].url;
+        }
+
+        while (urls.length < 6) {
+            const image = await getImage();
+
+            if (!urls.includes(image)) {
+                urls.push(image)
+                i++;
+
+                uniqueCards.push({
+                    image: image,
+                    flipped: false,
+                    pairId: i,
+                });
+            }
+        }
+
+        const deck = shuffle(
+            [...uniqueCards, ...uniqueCards].map((card) => {
+                return {
+                    ...card,
+                    id: nanoid(),
+                };
+            })
+        );
+
+        setCards(deck);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        createCards();
+    }, []);
 
     const restartGame = () => {
         setScore(0);
-        setCards(() =>
-            shuffle(
-                [...data, ...data].map((card) => ({
-                    ...card,
-                    flipped: false,
-                    id: nanoid(),
-                }))
-            )
-        );
+        createCards();
     };
 
     return (
-        <GameContext.Provider value={{ cards, setCards, score, setScore, restartGame }}>
+        <GameContext.Provider
+            value={{ cards, setCards, score, setScore, restartGame, loading }}
+        >
             {children}
         </GameContext.Provider>
     );

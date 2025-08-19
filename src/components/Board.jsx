@@ -3,7 +3,7 @@ import Card from "./Card";
 import { GameContext } from "../context/GameContextProvider";
 
 const Board = () => {
-    const { cards, setCards, setScore } = useContext(GameContext);
+    const { cards, setCards, setScore, loading } = useContext(GameContext);
 
     const [flippedCards, setFlippedCards] = useState([]);
 
@@ -60,6 +60,10 @@ const Board = () => {
             }
         }
     }, [flippedCards, cards]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="grid grid-cols-4 gap-4">

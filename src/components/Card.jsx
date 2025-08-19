@@ -8,7 +8,7 @@ const Card = ({ card, handleClick }) => {
 
             <div className={`card relative size-full ${flipped ? "" : "flipped"} cursor-pointer`}>
                 {/* Front */}
-                <div className="absolute size-full backface-hidden p-5 flex items-center justify-center border">
+                <div className="absolute size-full backface-hidden p-3 flex items-center justify-center border">
                     <img className="size-full object-cover object-top" src={image} />
                 </div>
                 {/* Back */}
