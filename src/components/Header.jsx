@@ -13,8 +13,11 @@ const Header = () => {
                 </div>
             </div>
 
-            <button onClick={restartGame} className="uppercase cursor-pointer">
-                <div className="font-bold bg-orange-600 px-3 py-1 text-white">
+            <button
+                onClick={restartGame}
+                className="uppercase cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+            >
+                <div className="font-bold bg-gradient-to-r from-orange-500 to-red-600 px-3 py-1 text-white hover:from-orange-600 hover:to-red-700">
                     Restart
                 </div>
             </button>
