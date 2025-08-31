@@ -1,14 +1,25 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../context/GameContextProvider";
 
 const Header = () => {
     const { score, restartGame } = useContext(GameContext);
+    const [animate, setAnimate] = useState(false);
+
+    useEffect(() => {
+        if (score > 0) {
+            setAnimate(true);
+            const timer = setTimeout(() => {
+                setAnimate(false);
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [score]);
 
     return (
         <div className="flex justify-between items-center border mb-6 px-10 py-4">
             <div className="flex items-center justify-center uppercase">
                 <div className="font-bold bg-blue-500 px-3 py-1 text-white">Score</div>
-                <div className="font-bold bg-blue-700 px-3 py-1 text-white">
+                <div className={`font-bold px-3 py-1 text-white transition-all duration-300 ${animate ? 'scale-125 bg-blue-500' : 'bg-blue-700'}`}>
                     {score}
                 </div>
             </div>
