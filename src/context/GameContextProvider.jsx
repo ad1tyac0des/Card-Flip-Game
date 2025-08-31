@@ -9,6 +9,7 @@ const GameContextProvider = ({ children }) => {
     const [score, setScore] = useState(0);
     const [cards, setCards] = useState([]);
     const [loading, setLoading] = useState(true);
+    const imgCount =  10; // REQ: always even
 
     async function createCards() {
         setLoading(true);
@@ -27,7 +28,7 @@ const GameContextProvider = ({ children }) => {
             return data.images[0].url;
         }
 
-        while (urls.length < 6) {
+        while (urls.length < imgCount) {
             const image = await getImage();
 
             if (!urls.includes(image)) {
@@ -66,7 +67,7 @@ const GameContextProvider = ({ children }) => {
 
     return (
         <GameContext.Provider
-            value={{ cards, setCards, score, setScore, restartGame, loading }}
+            value={{ cards, setCards, score, setScore, restartGame, loading, imgCount }}
         >
             {children}
         </GameContext.Provider>

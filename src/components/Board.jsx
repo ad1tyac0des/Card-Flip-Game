@@ -1,11 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import Card from "./Card";
 import { GameContext } from "../context/GameContextProvider";
+import { findBestCol } from "../utils/findBestCol";
 
 const Board = () => {
-    const { cards, setCards, setScore, loading } = useContext(GameContext);
+    const { cards, setCards, setScore, loading, imgCount } = useContext(GameContext);
 
     const [flippedCards, setFlippedCards] = useState([]);
+
+    const totalCards = imgCount * 2
+    const cols = findBestCol(totalCards);
 
     const handleClick = (id) => {
         const clickedCard = cards.find((card) => card.id === id);
@@ -66,7 +70,7 @@ const Board = () => {
     }
 
     return (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="w-full h-[86vh] grid gap-4" style={{gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`}}>
             {cards.map((card) => (
                 <Card key={card.id} card={card} handleClick={handleClick} />
             ))}

@@ -4,7 +4,7 @@ const Card = ({ card, handleClick }) => {
 
 
     return (
-        <div className="w-full h-65" onClick={() => handleClick(id)}>
+        <div onClick={() => handleClick(id)}>
 
             <div className={`card relative size-full ${flipped ? "" : "flipped"} cursor-pointer`}>
                 {/* Front */}
